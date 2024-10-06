@@ -155,4 +155,6 @@ The system is built using three key components:
 
 - **Expanding Medical Data**: We plan to incorporate more medical conditions and emergency scenarios by expanding the set of verified medical documents integrated into NotebookLM.
 
-test
+## Disclaimer
+
+Due to the unavailability of NotebookLM, this system may experience latency in response times. Additionally, while NotebookLM is used to provide first aid information, it is important to note that it may not always be accurate. Users should verify the guidance with a medical professional in case of emergencies. This system is not a substitute for professional medical advice or emergency services.
