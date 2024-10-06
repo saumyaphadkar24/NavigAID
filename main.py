@@ -11,9 +11,13 @@ import pyperclip
 from gtts import gTTS
 import os
 from playsound import playsound
+from pydub import AudioSegment
+from pydub.playback import play
 
 driver = webdriver.Chrome()
 driver.get("https://notebooklm.google.com/")
+AudioSegment.converter = "C:/ffmpeg/bin/ffmpeg.exe"
+
 
 
 def speech_to_text_from_mic():
@@ -116,8 +120,7 @@ def selenium(text):
     arrow_button.click()
     time.sleep(20)
 
-
-    response_xpath = "/html/body/labs-tailwind-root/div/notebook/div/div/div/div[2]/div[2]/chat-layout/div/div/div[2]/chat-message[4]/div/mat-card/mat-card-actions/chat-message-actions/div[1]/div/button/mat-icon"
+    response_xpath = f"/html/body/labs-tailwind-root/div/notebook/div/div/div/div[2]/div[2]/chat-layout/div/div/div[2]/chat-message[{counter}]/div/mat-card/mat-card-actions/chat-message-actions/div[1]/div/button/mat-icon"
 
     all_elements = WebDriverWait(driver, 50).until(EC.presence_of_all_elements_located((By.XPATH, response_xpath)))
     print(all_elements)
@@ -133,26 +136,60 @@ def selenium(text):
     return clipboard_content
 
 
-def text_to_speech_gtts(text, lang='en'):
-    # Initialize gTTS object
-    tts = gTTS(text=text, lang=lang)
+def text_to_speech_gtts(text, i, lang='en'):
+    # # Initialize gTTS object
+    # tts = gTTS(text=text, lang=lang)
     
-    # Save the audio to a file
-    filename = f"output{i}.mp3"
-    tts.save(filename)
+    # # Save the audio to a file
+    # filename = f"output{i}.mp3"
+    # tts.save(filename)
 
-    time.sleep(1)
+    # time.sleep(10)
     
-    # Play the audio file
-    print("Playing the converted speech...")
-    playsound(filename)
+    # # Play the audio file
+    # print("Playing the converted speech...")
+    # playsound(filename)
+    try:
+        # Initialize gTTS object
+        tts = gTTS(text=text, lang=lang)
+
+        # Define the absolute path for the file
+        current_dir = os.getcwd()  # Get current working directory
+        filename = os.path.join(current_dir, f"output{i}.mp3")  # Save in current directory
+
+        # Save the audio to a file
+        print(f"Saving audio file to: {filename}")
+        tts.save(filename)
+
+        # Verify if file exists before trying to play
+        if not os.path.exists(filename):
+            print(f"Error: File {filename} was not created.")
+            return
+
+        # Add a small delay to ensure file is saved properly
+        time.sleep(2)
+
+        # Load and play the mp3 file using pydub
+        print(f"Loading audio file: {filename}")
+        audio = AudioSegment.from_mp3(filename)
+
+        print(f"Playing audio: {filename}")
+        playsound(audio)
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 
 if __name__ == "__main__":
     notebooklmStart()
+    counter = 4
     for i in range(10):
         text = speech_to_text_from_mic()
-        if "exit" in text.lower():
+        if "bye" in text.lower():
             break
         speech = selenium(text)
-        text_to_speech_gtts(speech, i)
+        counter = counter + 2
+        text_to_speech_gtts(speech, i, "en")
+
+
+
