@@ -1,4 +1,4 @@
-# Real-Time Voice-Guided First Aid System
+# NavigAID: Real-Time Voice-Guided First Aid System
 
 ## Overview
 
